@@ -1,0 +1,20 @@
+<h1 class="text-center">
+    {{ titre }}
+</h1>
+
+<form class="col-sm-offset-3 col-sm-6" name="frmLogin" (ngSubmit)="valider()">
+    
+    <div class="form-group">
+        <label for="login">Login</label>
+        <input [(ngModel)]="login" type="text" name="lg" class="form-control"/> 
+    </div>
+    
+    <div class="form-group">
+        <label for="mdp">Mot de passe</label>
+        <input [(ngModel)]="mdp" type="password" name="motdepasse" class="form-control"/>
+    </div>
+
+    <div class="alert alert-danger" [hidden]="hide">{{errorMessage}} </div>
+
+    <button type="submit">Valider</button>
+</form>

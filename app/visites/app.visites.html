@@ -1,0 +1,105 @@
+<my-navbar></my-navbar>
+
+<nav class="navbar navbar-inverse">
+    <ul class="nav navbar-nav" style="display:flex; flex-direction:
+        row; justify-content: center">
+        <li><a (click)="modifierRapport()">Modifier un rapport</a></li>
+        <li><a (click)="ajouterRapport()">Ajouter un rapport</a></li>
+    </ul>
+</nav>
+
+<!--GESTION DE LA MISE A JOUR D'UN RAPPORT-->
+
+<div *ngIf="gestionMajRapport">
+    <!--Recherche du rapport-->
+    <div class="col-sm-3">
+        <div class="form-group">
+            <label for="date">Date de la visite</label>
+            <input id="date" type="date" class="form-control" [(ngModel)]="dateVisite" (change)="chargerVisites()" />
+        </div>
+    </div>
+    <br/>
+    <div class="list-group" style="margin-top: 70px; width: 50%">
+        <ul>
+            <a class="list-group-item" *ngFor="let rapport of lesRapports" (click)="selectionner(rapport)">
+               {{rapport.nomMedecin}} {{rapport.prenomMedecin}}
+        </a>
+    </ul>
+</div>
+
+
+<!--formulaire de MAJ du rapport-->
+<form class="col-sm-offset-3 col-sm-6" name="frmRapport" *ngIf="afficherRapport" (ngSubmit)="valider()" style="margin-top: 10px">
+    <div class="form-group">
+        <label for="motif">Motif </label>
+        <textarea rows="3" cols="30" required="true" [(ngModel)]="leRapport.motif" name="motif">
+        </textarea>
+    </div>
+    <div class="form-group">
+        <label for="bilan">Bilan</label>
+        <textarea rows="3" cols="30" required="true" [(ngModel)]="leRapport.bilan" name="bilan"></textarea>
+    </div>
+    <button type="submit">Valider</button>
+    <div class="alert alert-{{ classMaj }}" *ngIf="afficherRapportMAJ" style="margin-top: 15px">{{ messageMAJ }}</div>
+</form>
+
+</div>
+
+<!--GESTION DE L'AJOUT D'UN RAPPORT-->
+<div *ngIf="gestionAjoutRapport">
+    <!--Recherche du médecin -->
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for="medecin"> Sélectionner le médecin </label>
+            <input type="search" class="form-control" placeholder="Nom du médecin..." [(ngModel)]="nomMedecin" (keyup)="chargerMedecins()" id="medecin" />
+        </div>
+    </div>
+
+    <div class="list-group" *ngIf="printLesMedecins">
+        <ul>
+            <a class="list-group-item" *ngFor="let medecin of lesMedecins" (click)="selectionnerMedecin(medecin)">{{medecin.nom}} {{medecin.prenom}} / département : {{medecin.departement}}</a>
+        </ul>
+    </div>
+
+    <!--Formulaire de saisie des infos du rapport -->
+    <form class="col-lg-6" (ngSubmit)="enregistrer()">
+        <div class="form-group" >
+            <label for="motif"> Motif </label>
+            <textarea type="text" [(ngModel)]="motif" class="form-control" required="true" name="motif"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="bilan"> Bilan </label>
+            <textarea type="text" [(ngModel)]="bilan" class="form-control" required="true" name="bilan"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" required="true" class="form-control" [(ngModel)]="dateNouveauRapport" name="date" />
+        </div>
+
+        <!--Gestion des médicaments offerts -->
+        <label>Médicaments offerts</label>
+        <div class="form-group">
+            <input type="search" class="form-control" [(ngModel)]="nomMedicament" (keyup)="chargerMedicaments()" placeholder="Nom du médicament..." name="nomMedicament" />
+        </div>
+
+        <div class="list-group" *ngIf="printLesMedicaments">
+            <ul>
+                <li class="list-group-item" *ngFor="let medicament of lesMedicaments" (click)="choisirMedicament(medicament)"> {{medicament.nomCommercial }}</li>
+            </ul>
+        </div>
+        <div class="form-group">
+            <label for="qteSelect"> Quantité</label>
+            <input type="number" [(ngModel)]="qteSelect" class="form-control" value="1" name="qteSelect"/>
+        </div>
+
+        <ul class="list-group">
+            <label>Liste des médicaments sélectionner</label>
+            <a class="list-group-item" (click)="retirer(med)" *ngFor="let med of lesMedicamentsSelectionner">{{med.nom}} : {{med.qte}}</a>
+        </ul>
+
+        <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+
+        <div class="alert alert-{{classMaj}}" style="margin-top: 20px">{{messageMAJ}}</div>
+
+    </form>
+</div>

@@ -1,0 +1,60 @@
+<my-navbar></my-navbar>
+
+<nav class="navbar navbar-inverse" [hidden]="hide_menu">
+    <ul class="nav navbar-nav" style="display:flex; flex-direction:row;justify-content: center">
+        <li><a (click)="derniersRapports()">Derniers rapports</a></li>
+        <li><a (click)="majMedecin()">MAJ</a></li>
+    </ul>
+</nav>
+<div class="col-sm-offset-3 col-sm-6">
+    <div class="form-group">
+        <input type="search" class="form-control" placeholder="Saisissez le nom du médecin" [(ngModel)]="nomMedecin" (keyup)="charger()" />
+    </div>
+</div>
+
+<!--affichage des médecins -->
+<div class="list-group" style="margin-top: 70px;" [hidden]="hide_list">
+    <ul>
+        <li class="list-group-item" *ngFor="let medecin of lesMedecins" (click)="selectionner(medecin)"> 
+            {{medecin.nom}} {{medecin.prenom}} / département : {{medecin.departement}}
+    </li>
+</ul>
+</div>
+
+<!--affichage des rapports-->
+<table class="table table-bordered table-striped table-hover" *ngIf="afficherRapports">
+    <tr>
+        <th>Date</th>
+        <th>motif</th>
+        <th>Bilan</th>
+        <th>Nom du visiteur</th>
+    </tr>
+    <tr *ngFor="let rapport of lesRapports">
+        <td>{{rapport.date }} </td>
+        <td>{{rapport.motif }} </td>
+        <td>{{rapport.bilan }} </td>
+        <td>{{rapport.nom }} </td>
+    </tr>
+</table>
+
+<!--formulaire de MAJ du médecin-->
+<form class="col-sm-offset-3 col-sm-6" name="frmMedecin" *ngIf="afficherMedecin" (ngSubmit)="valider()" style="margin-top: 20px">
+    <div class="form-group">
+        <label for="adresse">Adresse </label>
+        <textarea rows="3" cols="30" required="true" [(ngModel)]="myMedecin.adresse" name="adr">
+        </textarea>
+    </div>
+    <div class="form-group">
+        <label for="tel">Téléphone</label>
+        <input type="text" required="true" [(ngModel)]="myMedecin.tel" name="tel" />
+    </div>
+    <div class="form-group">
+        <label for="specialite">Spécialité</label>
+        <input type="text" [(ngModel)]="myMedecin.specialitecomplementaire" name="spec" />
+    </div>
+    <button type="submit">Valider</button>
+
+
+    <div class="alert alert-{{ class_response }}" *ngIf="afficherMessage" style="margin-top: 20px">{{message}}</div>
+
+</form>

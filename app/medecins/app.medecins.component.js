@@ -11,74 +11,58 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var app_service_data_1 = require("../service/app.service.data");
+var app_service_data_1 = require("../services/app.service.data");
 var MedecinsComponent = /** @class */ (function () {
     function MedecinsComponent(dataService, router) {
         this.dataService = dataService;
         this.router = router;
-        this.titre = "Gestion des medecins";
-        this.hide_menu = true;
-        this.hide_list = true;
-        this.hide_modif = true;
+        this.legende = "Rechercher le médecin";
+        this.estCacheMenu = true;
         this.afficherRapports = false;
         this.afficherMedecin = false;
         this.afficherMessage = false;
+        this.lblMessage = "";
     }
     MedecinsComponent.prototype.charger = function () {
         var _this = this;
-        this.hide_menu = true;
-        this.afficherRapports = false;
-        this.afficherMedecin = false;
-        this.afficherMessage = false;
-        if (this.nomMedecin != "") {
-            this.dataService.chargerMedecins(this.nomMedecin)
-                .subscribe(function (data) {
-                _this.hide_list = false;
-                _this.lesMedecins = data['medecins'];
-                _this.dataService.ticket = data['ticket'];
-            }, function (error) {
-                //                        this.router.navigate(['']);
-            });
-        }
-        else {
-            this.hide_list = true;
-        }
+        this.dataService.chargerMedecins(this.nomMedecin)
+            .subscribe(function (data) {
+            _this.lesMedecins = data['medecins'];
+            _this.dataService.ticket = data['ticket'];
+        }, function (error) { _this.router.navigate(['']); });
     };
-    MedecinsComponent.prototype.selectionner = function (medecin) {
-        this.hide_list = true;
-        this.hide_menu = false;
-        this.nomMedecin = medecin.nom + " " + medecin.prenom + " / département : " + medecin.departement;
-        this.myMedecin = medecin;
+    MedecinsComponent.prototype.selectionner = function (med) {
+        this.medecin = med;
+        this.afficherRapports = false;
+        this.nomMedecin = med.nom + " " + med.prenom + "; dep : " + med.departement;
+        this.lesMedecins = null;
+        this.legende = "";
+        this.estCacheMenu = false;
     };
     MedecinsComponent.prototype.derniersRapports = function () {
         var _this = this;
+        this.afficherRapports = true;
         this.afficherMedecin = false;
-        this.afficherMessage = false;
-        this.dataService.chargerRapports(this.myMedecin.id)
+        this.dataService.chargerRapports(this.medecin.id)
             .subscribe(function (data) {
-            _this.afficherRapports = true;
             _this.lesRapports = data['rapports'];
+            _this.nomMedecin = "";
             _this.dataService.ticket = data['ticket'];
-        }, function (error) {
-            //                    this.router.navigate(['']);
-        });
-    };
-    MedecinsComponent.prototype.valider = function () {
-        var _this = this;
-        this.afficherMessage = true;
-        this.dataService.majMedecin(this.myMedecin.id, this.myMedecin.adresse, this.myMedecin.tel, this.myMedecin.specialitecomplementaire)
-            .subscribe(function (data) {
-            _this.dataService.ticket = data;
-            _this.message = "Enregistrement effectué";
-            _this.class_response = "success";
-        }, function (error) {
-            _this.message = "Enregistrement non effectué";
-            _this.class_response = "danger";
-        });
+        }, function (error) { _this.router.navigate(['']); });
     };
     MedecinsComponent.prototype.majMedecin = function () {
         this.afficherRapports = false;
         this.afficherMedecin = true;
+        this.afficherMessage = false;
+    };
+    MedecinsComponent.prototype.valider = function () {
+        var _this = this;
+        this.afficherMessage = true;
+        this.dataService.majMedecin(this.medecin.id, this.medecin.adresse, this.medecin.tel, this.medecin.specialitecomplementaire)
+            .subscribe(function (data) {
+            _this.lblMessage = "Enregistrement effectué";
+            _this.dataService.ticket = data;
+        }, function (error) { _this.router.navigate(['']); });
     };
     MedecinsComponent = __decorate([
         core_1.Component({
